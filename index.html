@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debora's game</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <style> body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; } </style>
+</head>
+
+<body>
+    <script>
+        // define o espaço na tela do navegador que será utilizado para exibir o jogo
+        const larguraJogo = 1280;
+        const alturaJogo = 850;
+
+        // definição das configurações do jogo
+        const config = {
+            type: Phaser.AUTO,
+            width: larguraJogo,
+            height: alturaJogo,
+        
+            scene: {
+                preload: preload,
+                create: create,
+                update: update
+            }
+        };
+
+        const game = new Phaser.Game(config); // inicialização de um novo jogo utilizando o framework Phaser
+
+        // declarando variáveis
+        var 
+
+        function preload() // Carrega as imagens: background, alien, fogo, plataforma e moeda
+        {      
+        }
+
+        function create() //Adiciona as imagens na tela (a ordem de alistamento define a sobreposição das imagens entre si - da camada superior para a inferior)
+        {
+        }
+
+        function update()        
+        {
+        }
+
+    </script>
+</body>
+</html>
