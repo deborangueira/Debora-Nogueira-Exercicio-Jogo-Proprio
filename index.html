@@ -5,44 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Debora's game</title>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
-    <style> body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; } </style>
+    <script src="scenes/walkingbambi.js"></script>
+    <script src="scenes/welcome.js"></script> 
+    
+    
+    <style> 
+        body { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        } 
+    </style>
+
 </head>
 
 <body>
-    <script>
-        // define o espaço na tela do navegador que será utilizado para exibir o jogo
-        const larguraJogo = 1280;
-        const alturaJogo = 850;
 
-        // definição das configurações do jogo
+    <div id="game"></div>
+
+    <script type="text/javascript">
+       
+        // define o espaço na tela do navegador que será utilizado para exibir o jogo
+        const larguraJogo = 1600;
+        const alturaJogo = 790;
+       
         const config = {
             type: Phaser.AUTO,
-            width: larguraJogo,
-            height: alturaJogo,
-        
-            scene: {
-                preload: preload,
-                create: create,
-                update: update
-            }
+            scale: {
+                mode: Phaser.Scale.FIT
+            },
+            autoCenter: Phaser.Scale.CENTER,
+            width: larguraJogo, //largura da tela do jogo
+            height: alturaJogo, //altura da tela do jogo
+            backgroundColor: '#39addd',
+            parent: "game",
+            dom:{
+               createContainer: true,
+            },
+            scene: [welcome, walkingbambi]
         };
-
-        const game = new Phaser.Game(config);
-
-        // declarando variáveis
         
-
-        function preload()
-        {      
-        }
-
-        function create() 
-        }
-
-        function update()        
-        {
-        }
-
+        var game = new Phaser.Game(config);
+        game.scene.start('welcome');
     </script>
+
 </body>
 </html>
+    
