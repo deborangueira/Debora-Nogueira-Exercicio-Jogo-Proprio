@@ -5,8 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Debora's game</title>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
-    <script src="scenes/walkingbambi.js"></script>
-    <script src="scenes/welcome.js"></script> 
+    <script src="scenes/jogo.js"></script>
+    <script src="scenes/tutorial.js"></script>
+    <script src="scenes/creditos.js"></script>
+    <script src="scenes/menu.js"></script>
+
     
     
     <style> 
@@ -39,16 +42,17 @@
             autoCenter: Phaser.Scale.CENTER,
             width: larguraJogo, //largura da tela do jogo
             height: alturaJogo, //altura da tela do jogo
-            backgroundColor: '#39addd',
+            backgroundColor: '#000',
             parent: "game",
             dom:{
                createContainer: true,
             },
-            scene: [welcome, walkingbambi]
+            scene: 
+            [menu, jogo, tutorial, creditos]
         };
         
         var game = new Phaser.Game(config);
-        game.scene.start('welcome');
+        game.scene.start('menu');
     </script>
 
 </body>
