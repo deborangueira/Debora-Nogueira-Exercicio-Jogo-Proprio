@@ -6,7 +6,7 @@ class jogo extends Phaser.Scene {
             physics: {
                 default: 'arcade',
                 arcade: {
-                    gravity: { y: 500 },
+                    gravity: { y: 300 },
                     debug: true 
                 }
             }
@@ -18,24 +18,22 @@ class jogo extends Phaser.Scene {
         this.teclado;
         this.ground;
         this.flores = [];
-        this.particula;
         this.riacho;
         this.placar;
         this.pontuacao = 0;
-        this.fogo;
         this.temporizador;
         this.tempoInicio = 30;
+        this.petala;
 
     }
 
 
     preload() {
-        // Carregar recursos
 
         this.load.image('bg', 'Assets/bg_c1.png');
         this.load.image('ground','Assets/ground1.png')
         this.load.image('flower', 'Assets/flower.png');
-        this.load.image('particula','Assets/particle.png')
+        this.load.image('particle','Assets/particle.png')
         this.load.image('riacho', 'Assets/Riacho.png');
         this.load.image('fire', 'Assets/fire.png');
         this.load.image('bambi', 'Assets/bambi.png',{ frameWidth: 32, frameHeight: 48 });
@@ -63,78 +61,103 @@ class jogo extends Phaser.Scene {
         this.bambi.setCollideWorldBounds(true); // impede que ele saia da tela
 
         //FLORES
-        this.flores.push(this.physics.add.sprite(300, 500, 'flower').setScale(0.2));
-        this.flores.push(this.physics.add.sprite(600, 450, 'flower').setScale(0.2));
-        this.flores.push(this.physics.add.sprite(900, 400, 'flower').setScale(0.2));
-        this.flores.push(this.physics.add.sprite(1000, 350, 'flower').setScale(0.2));
-        this.flores.push(this.physics.add.sprite(1500, 300, 'flower').setScale(0.2));
 
-        this.flores.forEach(flor => {
-            flor.setBounce(0.7);
-            flor.setCircle(130, 130, 130);
+        const coordenadasFlores = [
+            { x: 300, y: 500 },
+            { x: 620, y: 450 },
+            { x: 900, y: 400 },
+            { x: 1000, y: 350 },
+            { x: 1500, y: 300 },
+        ];
+
+        this.flores = this.physics.add.group({ 
+            bounceY: 0.7,
+            allowGravity: true 
         });
 
+        coordenadasFlores.forEach(coord => {
+            let flor = this.physics.add.sprite(coord.x, coord.y, 'flower').setScale(0.2);
+            flor.setBounce(0.7);
+            flor.setCircle(130, 130, 130);
+            this.flores.add(flor);
+        });
 
         //FOGO
-        this.fogo = this.physics.add.sprite(1200,500,'fire').setScale(0.15);
+
+        const coordenadasFogos = [
+            { x: 538, y: 500 },
+            { x: 1130, y: 500 },
+        ];
+
+        this.fogos = this.physics.add.group();
+        coordenadasFogos.forEach(coord => {
+            let fogo = this.physics.add.sprite(coord.x, coord.y, 'fire').setScale(0.17);
+            this.fogos.add(fogo);
+        });
 
         //COLISÕES
         this.physics.add.collider(this.bambi, this.ground); //entre o bambi e o chão
         this.physics.add.collider(this.flores, this.ground); //entre a flor e o chão
-        this.physics.add.collider(this.fogo, this.ground); //entre o fogo e o chão
+        this.physics.add.collider(this.fogos, this.ground); //entre o fogo e o chão
         this.physics.add.collider(this.bambi,this.riacho);
 
-        //INTERAÇÕES
-        // INTERAÇÕES - Todas as flores agora vão interagir com o bambi
-        this.flores.forEach(flor => {
+        // PLACAR
+        this.placar = this.add.text(50, 50, 'Flores:' + this.pontuacao, {fontSize:'45px', fill:'#495613'});
+
+        //placar: FOGO-BAMBI
+        this.fogos.children.iterate(fogo => {
+            this.physics.add.overlap(this.bambi, fogo, () => {
+                fogo.setVisible(false).destroy(); // Deixa a flor invisível e a remove
+                this.pontuacao -= 1;
+                this.placar.setText('Flores: ' + this.pontuacao);
+            });
+        });
+
+        //placar: FLORES-BAMBI
+        this.flores.children.iterate(flor => {
             this.physics.add.overlap(this.bambi, flor, () => {
+            
+                // Efeito de partículas na posição da flor
+                this.emissorDeParticulas.setPosition(flor.x, flor.y); // Ajusta a posição para onde a flor está
+                this.emissorDeParticulas.explode(10, flor.x, flor.y); // Explode 20 partículas na posição da flor
+
                 flor.setVisible(false).destroy(); // Deixa a flor invisível e a remove
+                
                 this.pontuacao += 1;
                 this.placar.setText('Flores: ' + this.pontuacao);
             });
         });
 
-        this.physics.add.overlap(this.bambi,this.fogo, () => {
-            this.fogo.setVisible(false).destroy(); // Deixa a flor invisivel e a remove completamente
-            this.pontuacao -=1;
-            this.placar.setText('Flores:' + this.pontuacao);
-        });
+        //EFEITO ESPECIAL
+        // Sistema de partículas para o efeito de flores
+        this.particulas = this.add.particles('particle');
 
-        // PLACAR
-        this.placar = this.add.text(50, 50, 'Flores:' + this.pontuacao, {fontSize:'45px', fill:'#495613'});
+        // Criar o emissor de partículas
+        this.emissorDeParticulas = this.particulas.createEmitter({
+            x: -100, // Posição inicial X do emissor
+            y: -100, 
+            speed: 250,
+            lifespan: 300, // tempo de vida das partículas
+            quantity: 1, // quantidade de partículas
+            alpha:{ start:0.8, end: 0},
+            scale: { start: 0.05, end: 0.07 },
+        });
 
         // TIMER
         this.temporizador = this.add.text(50, 100, 'Tempo: 60', {fontSize:'45px', fill:'#495613'});
            
         this.timeEvent = this.time.addEvent({
-            delay: 1000, //intervalo de tempo para atualizar a funçãqo
-            callback: this.updateTimer, //função iniciada a cada intervalo
-            callbackScope: this, //escopo da função de callback
+            delay: 1000,
+            callback: this.updateTimer,
+            callbackScope: this,
             loop: true //ocorre continuamente
         });
 
-
-        //EFEITO ESPECIAL 
-        this.particula = this.add.particles('particula');
-
-        this.physics.add.overlap(this.bambi, this.flor, (bambi, flor) => {
-        const emitter = this.particula.createEmitter({// Criar explosão de partículas
-            x: flor.x,
-            y: flor.y,
-            speed: { min: 0, max: 0 },
-            angle: { min: 0, max: 0 },
-            scale: { start: 0.3, end: 0.5 },
-            lifespan: 200,
-            quantity: 5
+        // GAME OVER se tocar no riacho
+        this.physics.add.overlap(this.bambi, this.riacho, () => {
+            this.scene.start('gameOver'); // Redireciona para a cena de "Game Over"
         });
-
-        // Para as partículas depois de um tempo
-        this.time.delayedCall(200, () => {
-            emitter.stop();
-        });
-
-
-    });
+        
 
     }
 
@@ -163,9 +186,9 @@ class jogo extends Phaser.Scene {
         this.temporizador.setText('Tempo: ' + this.tempoInicio);
 
         if (this.tempoInicio <= 0) {
-            // Adicione a lógica para o que acontece quando o tempo acaba (exemplo, terminar o jogo)
             this.timeEvent.remove();
         }
+
     }
     // Função que atualiza o temporizador
     updateTimer() {

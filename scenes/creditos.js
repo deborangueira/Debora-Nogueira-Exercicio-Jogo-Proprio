@@ -1,7 +1,7 @@
 //definindo a classe Tutorial
 class creditos extends Phaser.Scene {
 	constructor() {
-		super({ key: 'creditos' })    //chave da classem - útil para referenciação
+		super({ key: 'creditos' })  //chave da classem - útil para referenciação
 	}
 
     preload () {

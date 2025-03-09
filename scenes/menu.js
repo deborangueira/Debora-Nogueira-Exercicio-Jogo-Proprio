@@ -4,7 +4,6 @@ class menu extends Phaser.Scene {
     }
 
     preload() {
-        // Carregar recursos
         this.load.image('background','Assets/bg_welcome.png');
         this.load.image('botaojogar','Assets/bt_play.png');
         this.load.image('botaotutorial','Assets/bt_tutorial.png');
