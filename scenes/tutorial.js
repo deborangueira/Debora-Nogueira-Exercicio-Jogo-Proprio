@@ -6,6 +6,8 @@ class tutorial extends Phaser.Scene {
         });    
 	}
 
+
+
     preload () {
         
         this.load.image('voltar', 'Assets/bt_return.png');

@@ -12,6 +12,7 @@ class gameOver extends Phaser.Scene {
     create(){
 
         this.add.image(larguraJogo/2,alturaJogo/2,'bgGO');
+        this.cameras.main.fadeIn(1000);
     
         // Se o jogador pressionar a tecla 'R', reinicia o jogo
         this.input.keyboard.on('keydown-R', () => {

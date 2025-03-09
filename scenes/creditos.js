@@ -7,14 +7,14 @@ class creditos extends Phaser.Scene {
     preload () {
         
         this.load.image('voltar', 'Assets/bt_return.png');
-        this.load.image('bgTutorial', 'Assets/bg_tutorial.png');
+        this.load.image('bgCreditos', 'Assets/bg_creditos.jpg');
     }
 
 	create() {
 
-        this.add.image(larguraJogo/2,alturaJogo/2,'bgTutorial');
+        this.add.image(larguraJogo/2,alturaJogo/2,'bgCreditos');
     
-        //BOTÃO VOLTAR: adicionando e ativando-o
+        //BOTÃO VOLTAR
         var botaoVoltar = this.add.image(170, 700, 'voltar');
         botaoVoltar.setInteractive()
             .on('pointerdown', () => {

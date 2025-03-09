@@ -7,12 +7,12 @@ class jogo extends Phaser.Scene {
                 default: 'arcade',
                 arcade: {
                     gravity: { y: 300 },
-                    debug: true 
+                    debug: false 
                 }
             }
         });
     } 
-
+    
     init() {
         this.bambi;
         this.teclado;
@@ -23,13 +23,10 @@ class jogo extends Phaser.Scene {
         this.pontuacao = 0;
         this.temporizador;
         this.tempoInicio = 30;
-        this.petala;
 
     }
 
-
     preload() {
-
         this.load.image('bg', 'Assets/bg_c1.png');
         this.load.image('ground','Assets/ground1.png')
         this.load.image('flower', 'Assets/flower.png');
@@ -61,7 +58,6 @@ class jogo extends Phaser.Scene {
         this.bambi.setCollideWorldBounds(true); // impede que ele saia da tela
 
         //FLORES
-
         const coordenadasFlores = [
             { x: 300, y: 500 },
             { x: 620, y: 450 },
@@ -76,7 +72,7 @@ class jogo extends Phaser.Scene {
         });
 
         coordenadasFlores.forEach(coord => {
-            let flor = this.physics.add.sprite(coord.x, coord.y, 'flower').setScale(0.2);
+            let flor = this.physics.add.sprite(coord.x, coord.y, 'flower').setScale(0.2); // adiciona as flores nas coordenadas definidas dentro da variável coordenadasFlores
             flor.setBounce(0.7);
             flor.setCircle(130, 130, 130);
             this.flores.add(flor);
@@ -90,41 +86,43 @@ class jogo extends Phaser.Scene {
         ];
 
         this.fogos = this.physics.add.group();
+
         coordenadasFogos.forEach(coord => {
             let fogo = this.physics.add.sprite(coord.x, coord.y, 'fire').setScale(0.17);
+            fogo.body.setSize(fogo.width * 0.5, fogo.height * 0.8); // reduz a hitbox para 50% do tamanho original            
             this.fogos.add(fogo);
         });
 
         //COLISÕES
-        this.physics.add.collider(this.bambi, this.ground); //entre o bambi e o chão
-        this.physics.add.collider(this.flores, this.ground); //entre a flor e o chão
-        this.physics.add.collider(this.fogos, this.ground); //entre o fogo e o chão
-        this.physics.add.collider(this.bambi,this.riacho);
+        var itens = [this.bambi, this.flores, this.fogos];
+
+        this.physics.add.collider(itens, this.ground);
+        this.physics.add.collider(itens[0],this.riacho);
 
         // PLACAR
         this.placar = this.add.text(50, 50, 'Flores:' + this.pontuacao, {fontSize:'45px', fill:'#495613'});
 
         //placar: FOGO-BAMBI
         this.fogos.children.iterate(fogo => {
-            this.physics.add.overlap(this.bambi, fogo, () => {
-                fogo.setVisible(false).destroy(); // Deixa a flor invisível e a remove
-                this.pontuacao -= 1;
-                this.placar.setText('Flores: ' + this.pontuacao);
+            this.physics.add.overlap(this.bambi, fogo, () => { // quando ocorre sobreposição entre o bambi e o fogo
+                fogo.setVisible(false).destroy(); //  o fogo fica invisível e some
+                this.pontuacao -= 1; // um ponto é subtraido ao placar
+                this.placar.setText('Flores: ' + this.pontuacao); // o placar atualiza
             });
         });
 
         //placar: FLORES-BAMBI
         this.flores.children.iterate(flor => {
-            this.physics.add.overlap(this.bambi, flor, () => {
+            this.physics.add.overlap(this.bambi, flor, () => { // quando ocorre sobreposição entre o bambi e o fogo
             
-                // Efeito de partículas na posição da flor
-                this.emissorDeParticulas.setPosition(flor.x, flor.y); // Ajusta a posição para onde a flor está
-                this.emissorDeParticulas.explode(10, flor.x, flor.y); // Explode 20 partículas na posição da flor
+                // acontece uma explosão de brilho 
+                this.emissorDeParticulas.setPosition(flor.x, flor.y); // Ajusta a posição das particulas de brilho para onde a flor está
+                this.emissorDeParticulas.explode(10, flor.x, flor.y); // Explode 10 partículas na posição da flor
 
-                flor.setVisible(false).destroy(); // Deixa a flor invisível e a remove
+                flor.setVisible(false).destroy(); // A flor fica invisível e a remove
                 
-                this.pontuacao += 1;
-                this.placar.setText('Flores: ' + this.pontuacao);
+                this.pontuacao += 1; // um ponto é somado ao placar
+                this.placar.setText('Flores: ' + this.pontuacao); // o placar atualiza
             });
         });
 
@@ -134,7 +132,7 @@ class jogo extends Phaser.Scene {
 
         // Criar o emissor de partículas
         this.emissorDeParticulas = this.particulas.createEmitter({
-            x: -100, // Posição inicial X do emissor
+            x: -100,
             y: -100, 
             speed: 250,
             lifespan: 300, // tempo de vida das partículas
@@ -150,7 +148,7 @@ class jogo extends Phaser.Scene {
             delay: 1000,
             callback: this.updateTimer,
             callbackScope: this,
-            loop: true //ocorre continuamente
+            loop: true
         });
 
         // GAME OVER se tocar no riacho
@@ -183,25 +181,24 @@ class jogo extends Phaser.Scene {
             this.bambi.setVelocityY(-330);
         }
 
+        // Adicionando o temporizador na tela
         this.temporizador.setText('Tempo: ' + this.tempoInicio);
-
-        if (this.tempoInicio <= 0) {
-            this.timeEvent.remove();
-        }
 
     }
-    // Função que atualiza o temporizador
-    updateTimer() {
-        this.tempoInicio--; // diminui o tempo em 1
-        this.temporizador.setText('Tempo: ' + this.tempoInicio);
+    
+        // Função que atualiza o temporizador
+        updateTimer() {
+            this.tempoInicio--; // diminui o tempo em 1
+            this.temporizador.setText('Tempo: ' + this.tempoInicio); // atualiza o temporizador
 
         // Verifica se a pontuação chegou a 7
-        if (this.pontuacao == 4) {
-            this.timeEvent.remove(); // Remove o evento do temporizador
-            this.scene.start('gameWin');
+        if (this.pontuacao == 4) { // se o jogador coletar 4 flores
+            this.timeEvent.remove(); // o temporizador é removido
+            this.scene.start('gameWin'); // Redireciona para a cena de "Game win"
+
         }
 
-        if (this.tempoInicio <= 0) { // Lógica quando o tempo acabar, como terminar o jogo
+        if (this.tempoInicio <= 0) { // se o jogador não coletar as 4 flores
             this.timeEvent.remove(); // Remove o evento do temporizador
             this.scene.start('gameOver'); // Redireciona para a cena de "Game Over"
         }
