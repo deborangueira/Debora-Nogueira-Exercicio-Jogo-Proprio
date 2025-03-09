@@ -10,7 +10,7 @@
     <script src="scenes/creditos.js"></script>
     <script src="scenes/menu.js"></script>
     <script src="scenes/gameOver.js"></script>
-
+    <script src="scenes/gameWin.js"></script>
     
     <style> 
         body { 
@@ -48,7 +48,7 @@
                createContainer: true,
             },
             scene: 
-            [menu, jogo, tutorial, creditos, gameOver]
+            [menu, jogo, tutorial, creditos, gameOver, gameWin]
         };
         
         var game = new Phaser.Game(config);

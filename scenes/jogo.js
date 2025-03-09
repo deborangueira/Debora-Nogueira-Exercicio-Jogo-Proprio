@@ -24,7 +24,7 @@ class jogo extends Phaser.Scene {
         this.pontuacao = 0;
         this.fogo;
         this.temporizador;
-        this.tempoInicio = 60;
+        this.tempoInicio = 30;
 
     }
 
@@ -163,12 +163,19 @@ class jogo extends Phaser.Scene {
         this.tempoInicio--; // diminui o tempo em 1
         this.temporizador.setText('Tempo: ' + this.tempoInicio);
 
+        // Verifica se a pontuação chegou a 7
+        if (this.pontuacao == 4) {
+            this.timeEvent.remove(); // Remove o evento do temporizador
+            this.scene.start('gameWin');
+        }
+
         if (this.tempoInicio <= 0) { // Lógica quando o tempo acabar, como terminar o jogo
             this.timeEvent.remove(); // Remove o evento do temporizador
             this.scene.start('gameOver'); // Redireciona para a cena de "Game Over"
-     
         }
     }
+
+
 }
 
 
