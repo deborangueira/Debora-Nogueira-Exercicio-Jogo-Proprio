@@ -8,7 +8,7 @@ class gameWin extends Phaser.Scene {
         this.add.text(150, 300, 'Pressione M para ir para o menu', { fontSize: '32px', fill: '#FFFFFF' });
 
         // Se o jogador pressionar a tecla 'R', reinicia o jogo
-        this.input.keyboard.on('keydown-R', () => {
+        this.input.keyboard.on('keydown-M', () => {
             this.scene.start('menu'); // Volta para a cena de jogo
         });
     }

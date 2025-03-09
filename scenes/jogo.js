@@ -17,7 +17,7 @@ class jogo extends Phaser.Scene {
         this.bambi;
         this.teclado;
         this.ground;
-        this.flor;
+        this.flores = [];
         this.particula;
         this.riacho;
         this.placar;
@@ -63,26 +63,35 @@ class jogo extends Phaser.Scene {
         this.bambi.setCollideWorldBounds(true); // impede que ele saia da tela
 
         //FLORES
-        this.flor = this.physics.add.sprite(300,500,'flower').setScale(0.2);
-        this.flor.setBounce(0.7);
-        this.flor.setCircle(130,130,130);
+        this.flores.push(this.physics.add.sprite(300, 500, 'flower').setScale(0.2));
+        this.flores.push(this.physics.add.sprite(600, 450, 'flower').setScale(0.2));
+        this.flores.push(this.physics.add.sprite(900, 400, 'flower').setScale(0.2));
+        this.flores.push(this.physics.add.sprite(1000, 350, 'flower').setScale(0.2));
+        this.flores.push(this.physics.add.sprite(1500, 300, 'flower').setScale(0.2));
+
+        this.flores.forEach(flor => {
+            flor.setBounce(0.7);
+            flor.setCircle(130, 130, 130);
+        });
+
 
         //FOGO
         this.fogo = this.physics.add.sprite(1200,500,'fire').setScale(0.15);
-        this.flor.setBounce(0.7);
-        this.flor.setCircle(130,130,130);
 
         //COLISÕES
         this.physics.add.collider(this.bambi, this.ground); //entre o bambi e o chão
-        this.physics.add.collider(this.flor, this.ground); //entre a flor e o chão
+        this.physics.add.collider(this.flores, this.ground); //entre a flor e o chão
         this.physics.add.collider(this.fogo, this.ground); //entre o fogo e o chão
         this.physics.add.collider(this.bambi,this.riacho);
 
         //INTERAÇÕES
-        this.physics.add.overlap(this.bambi,this.flor, () => {
-            this.flor.setVisible(false).destroy(); // Deixa a flor invisivel e a remove completamente
-            this.pontuacao +=1;
-            this.placar.setText('Flores:' + this.pontuacao);
+        // INTERAÇÕES - Todas as flores agora vão interagir com o bambi
+        this.flores.forEach(flor => {
+            this.physics.add.overlap(this.bambi, flor, () => {
+                flor.setVisible(false).destroy(); // Deixa a flor invisível e a remove
+                this.pontuacao += 1;
+                this.placar.setText('Flores: ' + this.pontuacao);
+            });
         });
 
         this.physics.add.overlap(this.bambi,this.fogo, () => {

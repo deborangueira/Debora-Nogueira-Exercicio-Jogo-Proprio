@@ -9,7 +9,7 @@ class tutorial extends Phaser.Scene {
     preload () {
         
         this.load.image('voltar', 'Assets/bt_return.png');
-        this.load.image('bgTutorial', 'Assets/bg_tutorial.png');
+        this.load.image('bgTutorial', 'Assets/bg_tutorial.jpg');
     }
 
 	create() {
