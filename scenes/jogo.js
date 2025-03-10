@@ -105,8 +105,12 @@ class jogo extends Phaser.Scene {
         //placar: FOGO-BAMBI
         this.fogos.children.iterate(fogo => {
             this.physics.add.overlap(this.bambi, fogo, () => { // quando ocorre sobreposição entre o bambi e o fogo
+                
                 fogo.setVisible(false).destroy(); //  o fogo fica invisível e some
-                this.pontuacao -= 1; // um ponto é subtraido ao placar
+                
+                for (let i = 0; i < 1; i++) {
+                    this.pontuacao -= 1; // Um ponto é subtraido ao placar
+                }                 
                 this.placar.setText('Flores: ' + this.pontuacao); // o placar atualiza
             });
         });
@@ -121,7 +125,9 @@ class jogo extends Phaser.Scene {
 
                 flor.setVisible(false).destroy(); // A flor fica invisível e a remove
                 
-                this.pontuacao += 1; // um ponto é somado ao placar
+                for (let i = 0; i < 1; i++) {
+                    this.pontuacao += 1; // Um ponto é somado ao placar
+                }             
                 this.placar.setText('Flores: ' + this.pontuacao); // o placar atualiza
             });
         });
