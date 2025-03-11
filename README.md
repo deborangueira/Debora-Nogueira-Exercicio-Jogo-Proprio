@@ -8,5 +8,5 @@
 
 5. Link do código: https://github.com/deborangueira/Debora-Nogueira-Exercicio-Jogo-Proprio/tree/main/scenes
 
-6. Link da versão jogável: https://deborangueira.github.io/Debora-Nogueira-Exercicio-Jogo-Proprio/
+6. Link da versão jogável: https://deborangueira.github.io/S4_ProjetoPessoal/ 
    
